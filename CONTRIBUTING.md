@@ -1,110 +1,188 @@
-[![Bolt Open Source Codebase](./public/social_preview_index.jpg)](https://bolt.new)
+# Contributing to bolt-new-local
 
-> Welcome to the **Bolt** open-source codebase! This repo contains a simple example app using the core components from bolt.new to help you get started building **AI-powered software development tools** powered by StackBlitz’s **WebContainer API**.
+AI-powered full-stack web development in the browser — работает на Remix, Cloudflare Pages и WebContainer API.
 
-### Why Build with Bolt + WebContainer API
+---
 
-By building with the Bolt + WebContainer API you can create browser-based applications that let users **prompt, run, edit, and deploy** full-stack web apps directly in the browser, without the need for virtual machines. With WebContainer API, you can build apps that give AI direct access and full control over a **Node.js server**, **filesystem**, **package manager** and **dev terminal** inside your users browser tab. This powerful combination allows you to create a new class of development tools that support all major JavaScript libraries and Node packages right out of the box, all without remote environments or local installs.
+## Требования
 
-### What’s the Difference Between Bolt (This Repo) and [Bolt.new](https://bolt.new)?
+| Инструмент | Версия |
+|---|---|
+| Node.js | >= 18.18.0 |
+| pnpm | 9.4.0 |
 
-- **Bolt.new**: This is the **commercial product** from StackBlitz—a hosted, browser-based AI development tool that enables users to prompt, run, edit, and deploy full-stack web applications directly in the browser. Built on top of the [Bolt open-source repo](https://github.com/stackblitz/bolt.new) and powered by the StackBlitz **WebContainer API**.
+---
 
-- **Bolt (This Repo)**: This open-source repository provides the core components used to make **Bolt.new**. This repo contains the UI interface for Bolt as well as the server components, built using [Remix Run](https://remix.run/). By leveraging this repo and StackBlitz’s **WebContainer API**, you can create your own AI-powered development tools and full-stack applications that run entirely in the browser.
-
-# Get Started Building with Bolt
-
-Bolt combines the capabilities of AI with sandboxed development environments to create a collaborative experience where code can be developed by the assistant and the programmer together. Bolt combines [WebContainer API](https://webcontainers.io/api) with [Claude Sonnet 3.5](https://www.anthropic.com/news/claude-3-5-sonnet) using [Remix](https://remix.run/) and the [AI SDK](https://sdk.vercel.ai/).
-
-### WebContainer API
-
-Bolt uses [WebContainers](https://webcontainers.io/) to run generated code in the browser. WebContainers provide Bolt with a full-stack sandbox environment using [WebContainer API](https://webcontainers.io/api). WebContainers run full-stack applications directly in the browser without the cost and security concerns of cloud hosted AI agents. WebContainers are interactive and editable, and enables Bolt's AI to run code and understand any changes from the user.
-
-The [WebContainer API](https://webcontainers.io) is free for personal and open source usage. If you're building an application for commercial usage, you can learn more about our [WebContainer API commercial usage pricing here](https://stackblitz.com/pricing#webcontainer-api).
-
-### Remix App
-
-Bolt is built with [Remix](https://remix.run/) and
-deployed using [CloudFlare Pages](https://pages.cloudflare.com/) and
-[CloudFlare Workers](https://workers.cloudflare.com/).
-
-### AI SDK Integration
-
-Bolt uses the [AI SDK](https://github.com/vercel/ai) to integrate with AI
-models. At this time, Bolt supports using Anthropic's Claude Sonnet 3.5.
-You can get an API key from the [Anthropic API Console](https://console.anthropic.com/) to use with Bolt.
-Take a look at how [Bolt uses the AI SDK](https://github.com/stackblitz/bolt.new/tree/main/app/lib/.server/llm)
-
-## Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-- Node.js (v20.15.1)
-- pnpm (v9.4.0)
-
-## Setup
-
-1. Clone the repository (if you haven't already):
+## Быстрый старт
 
 ```bash
-git clone https://github.com/stackblitz/bolt.new.git
-```
-
-2. Install dependencies:
-
-```bash
+git clone https://github.com/ivanm696/bolt-new-local.git
+cd bolt-new-local
 pnpm install
+cp .env.example .env
 ```
 
-3. Create a `.env.local` file in the root directory and add your Anthropic API key:
+Открой `.env` и добавь один из ключей:
 
+```env
+# Вариант 1: Anthropic Claude 3.5 Sonnet (платный)
+# https://console.anthropic.com/settings/keys
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Вариант 2: Groq — llama-3.3-70b-versatile (БЕСПЛАТНО)
+# https://console.groq.com/keys
+GROQ_API_KEY=gsk_...
 ```
-ANTHROPIC_API_KEY=XXX
-```
 
-Optionally, you can set the debug level:
-
-```
-VITE_LOG_LEVEL=debug
-```
-
-**Important**: Never commit your `.env.local` file to version control. It's already included in .gitignore.
-
-## Available Scripts
-
-- `pnpm run dev`: Starts the development server.
-- `pnpm run build`: Builds the project.
-- `pnpm run start`: Runs the built application locally using Wrangler Pages. This script uses `bindings.sh` to set up necessary bindings so you don't have to duplicate environment variables.
-- `pnpm run preview`: Builds the project and then starts it locally, useful for testing the production build. Note, HTTP streaming currently doesn't work as expected with `wrangler pages dev`.
-- `pnpm test`: Runs the test suite using Vitest.
-- `pnpm run typecheck`: Runs TypeScript type checking.
-- `pnpm run typegen`: Generates TypeScript types using Wrangler.
-- `pnpm run deploy`: Builds the project and deploys it to Cloudflare Pages.
-
-## Development
-
-To start the development server:
+> Если задан только `GROQ_API_KEY` — Groq выбирается автоматически.
+> Если заданы оба — приоритет у Anthropic.
 
 ```bash
-pnpm run dev
+pnpm dev   # → http://localhost:5173
 ```
 
-This will start the Remix Vite development server.
+---
 
-## Testing
+## Скрипты
 
-Run the test suite with:
+| Команда | Что делает |
+|---|---|
+| `pnpm dev` | Dev-сервер через Vite + Wrangler |
+| `pnpm build` | Сборка (Remix → `build/client` + `build/server`) |
+| `pnpm start` | Запуск собранного через Wrangler Pages |
+| `pnpm preview` | `build` + `start` одной командой |
+| `pnpm test` | Vitest (unit-тесты) |
+| `pnpm typecheck` | `tsc` — проверка TypeScript |
+| `pnpm deploy` | Деплой на Cloudflare Pages через Wrangler |
+
+---
+
+## Архитектура
+
+### Точки входа
+
+| Файл | Назначение |
+|---|---|
+| `functions/[[path]].ts` | Cloudflare Pages Function — точка входа для всех запросов, проксирует в Remix |
+| `load-context.ts` | Типизирует `AppLoadContext` — пробрасывает `context.cloudflare.env` (переменные окружения) в роуты |
+| `worker-configuration.d.ts` | Интерфейс `Env` — `ANTHROPIC_API_KEY`, `GROQ_API_KEY` |
+| `wrangler.toml` | Конфиг Cloudflare Pages: имя проекта, `nodejs_compat`, папка сборки |
+
+### API роуты (`app/routes/`)
+
+| Файл | Метод | Назначение |
+|---|---|---|
+| `api.chat.ts` | POST | Стриминг ответов AI. Использует `SwitchableStream` для автопродолжения при достижении лимита токенов |
+| `api.enhancer.ts` | POST | Улучшение пользовательского промпта через AI. Возвращает `Response` с `result.textStream` |
+| `_index.tsx` | GET | Главная страница (новый чат) |
+| `chat.$id.tsx` | GET | Страница существующего чата по ID |
+
+### LLM слой (`app/lib/.server/llm/`)
+
+> Весь этот код выполняется **только на сервере** (Cloudflare Worker).
+
+| Файл | Назначение |
+|---|---|
+| `api-key.ts` | `getAPIKey(env, provider)` — достаёт ключ из `process.env` или Cloudflare env. `getProvider(env)` — авто-определение провайдера |
+| `model.ts` | `getModel(apiKey, provider)` — возвращает `LanguageModel`. Anthropic через `@ai-sdk/anthropic`, Groq через `@ai-sdk/openai` с `baseURL: groq.com` |
+| `stream-text.ts` | `streamText(messages, env, options?)` — главная функция стриминга. Определяет провайдер, получает модель, вызывает `_streamText` из пакета `ai` |
+| `switchable-stream.ts` | `SwitchableStream extends TransformStream` — позволяет переключать источник стрима на лету (нужно для автопродолжения длинных ответов) |
+| `prompts.ts` | `getSystemPrompt()` — системный промпт для AI (инструкции по генерации кода) |
+| `constants.ts` | `MAX_TOKENS`, `MAX_RESPONSE_SEGMENTS` — лимиты для стриминга |
+
+### Runtime (`app/lib/runtime/`)
+
+| Файл | Назначение |
+|---|---|
+| `message-parser.ts` | Парсит стриминговые ответы AI — выделяет `<boltArtifact>` и `<boltAction>` теги в реальном времени |
+| `action-runner.ts` | `ActionRunner` — выполняет actions из AI: `shell` (запуск команд в WebContainer) и `file` (запись файлов) |
+| `message-parser.spec.ts` | Unit-тесты парсера (24 теста) |
+
+### Хранилища состояния (`app/lib/stores/`) — Nanostores
+
+| Файл | Что хранит |
+|---|---|
+| `workbench.ts` | `WorkbenchStore` — главный стор. Координирует редактор, файлы, превью, терминал. Каждые 30 сек проверяет изменения в локальной папке |
+| `files.ts` | `FilesStore` — карта файлов WebContainer (`/home/project/...`) |
+| `editor.ts` | `EditorStore` — текущий документ, позиции скролла, несохранённые изменения |
+| `previews.ts` | `PreviewsStore` — URL превью из WebContainer портов |
+| `terminal.ts` | `TerminalStore` — xterm.js терминал, подключённый к WebContainer |
+| `chat.ts` | ID текущего чата, описание |
+| `settings.ts` | Пользовательские настройки |
+| `theme.ts` | Тёмная/светлая тема |
+
+### Персистентность (`app/lib/persistence/`)
+
+| Файл | Назначение |
+|---|---|
+| `db.ts` | IndexedDB — `openDatabase()`, `getMessages()`, `setMessages()`, `getNextId()`, `getUrlId()` |
+| `useChatHistory.ts` | React-хук — загружает историю чата при открытии, сохраняет после каждого сообщения |
+| `fileSystem.ts` | File System Access API — `selectDirectory()`, `writeFile()`, `readFile()`, `checkForFileChanges()`, синхронизация `.boltnew.json` |
+| `index.ts` | Реэкспорт публичного API персистентности |
+| `ChatDescription.client.tsx` | Inline-редактирование названия чата в сайдбаре |
+
+### WebContainer (`app/lib/webcontainer/`)
+
+| Файл | Назначение |
+|---|---|
+| `index.ts` | Singleton `webcontainer: Promise<WebContainer>` — буtstraps WebContainer один раз, переиспользуется через HMR |
+| `auth.client.ts` | Авторизация WebContainer API |
+
+### Компоненты (`app/components/`)
+
+```
+chat/
+  BaseChat.tsx          — Layout чата (инпут + сообщения)
+  Chat.client.tsx        — Логика чата: useChat(@ai-sdk/react), стриминг, история
+  Messages.client.tsx    — Список сообщений
+  Artifact.tsx           — Отображение артефакта (код + действия)
+  AssistantMessage.tsx   — Рендер Markdown ответа AI
+  UserMessage.tsx        — Сообщение пользователя
+
+workbench/
+  Workbench.client.tsx   — Панель с редактором, превью и терминалом
+  EditorPanel.tsx        — CodeMirror + файловое дерево
+  FileTree.tsx           — Дерево файлов WebContainer
+  Preview.tsx            — iframe превью + управление портами
+  terminal/Terminal.tsx  — xterm.js терминал
+
+header/
+  Header.tsx             — Шапка: лого + кнопки
+  HeaderActionButtons.client.tsx — Кнопки: открыть папку, скачать проект
+
+sidebar/
+  Menu.client.tsx        — История чатов
+  HistoryItem.tsx        — Элемент истории (переименование, удаление)
+```
+
+---
+
+## Добавить AI провайдера
+
+1. `worker-configuration.d.ts` — добавь ключ в `Env`
+2. `app/lib/.server/llm/api-key.ts` — добавь тип и логику в `getAPIKey` / `getProvider`
+3. `app/lib/.server/llm/model.ts` — добавь инициализацию модели в `getModel`
+4. `.env.example` — добавь переменную с комментарием
+
+---
+
+## Деплой на Cloudflare Pages
 
 ```bash
-pnpm test
+npx wrangler login
+pnpm deploy
 ```
 
-## Deployment
+В Cloudflare Dashboard добавь переменные окружения:
+**Settings → Environment Variables** → `ANTHROPIC_API_KEY` или `GROQ_API_KEY`
 
-To deploy the application to Cloudflare Pages:
+---
+
+## Тесты
 
 ```bash
-pnpm run deploy
+pnpm test       # запуск
+pnpm typecheck  # TypeScript проверка
 ```
 
-Make sure you have the necessary permissions and Wrangler is correctly configured for your Cloudflare account.
+Тесты: `app/lib/runtime/message-parser.spec.ts` — 24 теста парсера AI-ответов.
