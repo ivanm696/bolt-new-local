@@ -10,6 +10,12 @@ export default defineConfig((config) => {
     build: {
       target: 'esnext',
     },
+    // 👇 Перехватываем кривые импорты zod/v3 из node_modules
+    resolve: {
+      alias: {
+        'zod/v3': 'zod',
+      },
+    },
     plugins: [
       nodePolyfills({
         include: ['path', 'buffer'],
