@@ -1,0 +1,16 @@
+feat: bolt-new-local — AI web dev in browser
+Stack: Remix + Cloudflare Pages + WebContainer API
+
+AI Providers:
+- Anthropic Claude 3.5 Sonnet (paid)
+- Groq llama-3.3-70b (FREE) — auto-detected if no Anthropic key
+
+Fixes vs original:
+- @types/path-browserify added
+- fileSystem.ts: ChatHistoryItem import, showDirectoryPicker/.values() cast to any
+- useChatHistory.ts: IDBDatabase non-null assertions
+- Chat.client.tsx: ai/react → @ai-sdk/react
+- api.enhancer.ts: StreamingTextResponse/toAIStream → Response + textStream
+- stream-text.ts: convertToCoreMessages cast
+- worker-configuration.d.ts: GROQ_API_KEY added to Env
+- TypeScript: 0 errors. Tests: 24/24 passing.
