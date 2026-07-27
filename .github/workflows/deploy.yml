@@ -1,0 +1,19 @@
+ name: Bot CI/CD
+
++permissions:
++  contents: read
++
+ on:
+   push:
+@@
+ jobs:
+   build_and_test:
++    permissions:
++      contents: read
++      packages: write
+     runs-on: ubuntu-latest
+@@
+   deploy:
++    permissions:
++      contents: read
+     needs: build_and_test
